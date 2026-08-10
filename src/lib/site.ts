@@ -18,9 +18,8 @@ export const site = {
   linkedinUrl: "https://www.linkedin.com/in/esakki-alaguvel-187917289/",
   resumeHref: "/Esakki-Alaguvel-Resume.pdf",
   avatar: "/profile.jpg",
-  // PLACEHOLDER — set to the real domain before deploying. Canonical, OG and
-  // sitemap URLs all derive from this.
-  url: "https://esakki-alaguvel.vercel.app",
+  // Canonical, Open Graph and sitemap URLs all derive from this.
+  url: "https://www.dev-esakki.pp.ua",
 } as const;
 
 export const navLinks = [
