@@ -1,0 +1,18 @@
+{
+  // Cloudflare Workers deployment, built by @opennextjs/cloudflare.
+  // Workers (not Pages) is Cloudflare's current path for Next.js — it keeps the
+  // Node runtime, so the /api routes and the dynamic OG image work unchanged.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "esakki-portfolio",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-01",
+  // Required by OpenNext: the server bundle uses Node built-ins.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
