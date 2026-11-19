@@ -22,7 +22,16 @@ const STATIC_LINES: Line[] = terminalScript.flatMap((s) => [
   { kind: "out" as const, text: s.out, tone: s.tone },
 ]);
 
-/** Terminal that types the command list on a loop. */
+/** Factual one-line fleet readout for the console status bar. */
+const statusBar = [
+  { label: "nodes", value: "4/4", tone: "text-ok" },
+  { label: "mesh", value: "up", tone: "text-ok" },
+  { label: "lb", value: "round-robin", tone: "text-cyan" },
+  { label: "ci", value: "passing", tone: "text-ok" },
+];
+
+/** Live terminal console: types the command list on a loop, framed as a real
+    monitoring shell with window chrome and a fleet status bar. */
 export function TerminalWindow() {
   const reduced = useReducedMotion();
   const [lines, setLines] = useState<Line[]>([]);
@@ -58,10 +67,7 @@ export function TerminalWindow() {
             return next.length > terminalScript.length * 2 ? [] : next;
           });
 
-          timeout = setTimeout(
-            () => setStep((s) => s + 1),
-            HOLD_AFTER_OUT,
-          );
+          timeout = setTimeout(() => setStep((s) => s + 1), HOLD_AFTER_OUT);
         }, HOLD_AFTER_CMD);
       }
     }, TYPE_MS);
@@ -80,7 +86,8 @@ export function TerminalWindow() {
   const shownLines: Line[] = reduced ? STATIC_LINES : lines;
 
   return (
-    <div className="glass glow-ring w-full overflow-hidden rounded-2xl shadow-[0_30px_80px_-40px_#000]">
+    <div className="panel glow-ring corner-frame relative w-full overflow-hidden rounded-xl shadow-[0_30px_80px_-40px_#000]">
+      {/* Window chrome */}
       <div className="flex items-center gap-2 border-b border-line px-4 py-3">
         <span className="size-3 rounded-full bg-[#ff5f57]" />
         <span className="size-3 rounded-full bg-[#febc2e]" />
@@ -88,11 +95,15 @@ export function TerminalWindow() {
         <p className="ml-3 font-mono text-xs text-faint">
           esakki@platform: ~/infra
         </p>
+        <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] text-ok uppercase">
+          <span className="led" /> live
+        </span>
       </div>
 
+      {/* Log */}
       <div
         ref={scrollRef}
-        className="h-[19rem] overflow-hidden p-4 font-mono text-[13px] leading-relaxed sm:text-sm"
+        className="h-[18rem] overflow-hidden p-4 font-mono text-[13px] leading-relaxed sm:text-sm"
         aria-hidden
       >
         {shownLines.map((line, i) =>
@@ -102,7 +113,11 @@ export function TerminalWindow() {
               {line.text}
             </p>
           ) : (
-            <p key={i} className={`mb-2 ${toneClass[line.tone] ?? "text-muted"}`}>
+            <p
+              key={i}
+              className={`mb-2 ${toneClass[line.tone] ?? "text-muted"}`}
+            >
+              <span className="text-faint">↳ </span>
               {line.text}
             </p>
           ),
@@ -118,6 +133,16 @@ export function TerminalWindow() {
             />
           </p>
         )}
+      </div>
+
+      {/* Fleet status bar */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line bg-ink/40 px-4 py-2.5 font-mono text-[11px]">
+        {statusBar.map((c) => (
+          <span key={c.label} className="inline-flex items-center gap-1.5">
+            <span className="text-faint">{c.label}</span>
+            <span className={c.tone}>{c.value}</span>
+          </span>
+        ))}
       </div>
     </div>
   );

@@ -10,6 +10,34 @@ import { cn } from "@/lib/utils";
 
 const ids = navLinks.map((l) => l.id);
 
+/** Live IST clock for the command-bar status readout. Renders a placeholder
+    until mounted so server and client markup match (no hydration mismatch). */
+function Clock() {
+  const [now, setNow] = useState<string>("");
+
+  useEffect(() => {
+    const tick = () =>
+      setNow(
+        new Intl.DateTimeFormat("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+          timeZone: "Asia/Kolkata",
+        }).format(new Date()),
+      );
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <span className="tabular-nums" suppressHydrationWarning>
+      {now || "--:--:--"} IST
+    </span>
+  );
+}
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -42,7 +70,7 @@ export function Navbar() {
     <>
       <a
         href="#about"
-        className="glass sr-only rounded-full px-4 py-2 text-sm focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[95]"
+        className="glass sr-only rounded-md px-4 py-2 text-sm focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[95]"
       >
         Skip to content
       </a>
@@ -53,17 +81,23 @@ export function Navbar() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
           className={cn(
-            "flex w-full max-w-5xl items-center justify-between rounded-full px-3 py-2 transition-all duration-400",
-            scrolled ? "glass shadow-[0_14px_40px_-24px_#000]" : "bg-transparent",
+            "flex w-full max-w-6xl items-center justify-between rounded-lg px-3 py-2 font-mono transition-all duration-400",
+            scrolled
+              ? "panel shadow-[0_14px_40px_-24px_#000]"
+              : "border border-transparent bg-transparent",
           )}
         >
           <a
             href="#home"
-            className="flex items-center gap-2.5 pl-1 text-sm font-medium tracking-tight"
+            className="flex items-center gap-2.5 pl-1 text-sm tracking-tight"
             aria-label={`${site.name} — home`}
           >
-            <Avatar size={30} eager />
-            <span className="hidden sm:inline">{site.firstName}</span>
+            <Avatar size={28} eager />
+            <span className="hidden items-center gap-1.5 sm:flex">
+              <span className="led" />
+              <span className="text-faint">esakki@portfolio</span>
+              <span className="text-cyan">~$</span>
+            </span>
           </a>
 
           <ul className="hidden items-center gap-0.5 lg:flex">
@@ -73,16 +107,14 @@ export function Navbar() {
                   href={`#${link.id}`}
                   aria-current={active === link.id ? "true" : undefined}
                   className={cn(
-                    "relative rounded-full px-3.5 py-2 text-sm transition-colors",
-                    active === link.id
-                      ? "text-fg"
-                      : "text-muted hover:text-fg",
+                    "relative rounded-md px-3 py-1.5 text-[13px] tracking-tight transition-colors",
+                    active === link.id ? "text-cyan" : "text-muted hover:text-fg",
                   )}
                 >
                   {active === link.id && (
                     <motion.span
                       layoutId="nav-active"
-                      className="absolute inset-0 rounded-full bg-white/8"
+                      className="absolute inset-0 rounded-md border border-[color-mix(in_oklab,var(--color-cyan)_40%,transparent)] bg-cyan/10"
                       transition={{ type: "spring", stiffness: 340, damping: 30 }}
                     />
                   )}
@@ -93,11 +125,14 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2">
+            <span className="mono-label hidden tracking-[0.1em] normal-case xl:inline">
+              <Clock />
+            </span>
             <a
               href="#contact"
-              className="hidden rounded-full bg-[linear-gradient(100deg,var(--color-blue),var(--color-cyan))] px-4 py-2 text-sm font-medium text-[#03121f] transition-[filter] hover:brightness-110 sm:inline-flex"
+              className="hidden rounded-md bg-[linear-gradient(100deg,var(--color-blue),var(--color-cyan))] px-3.5 py-1.5 text-[13px] font-medium text-[#03121f] transition-[filter] hover:brightness-110 sm:inline-flex"
             >
-              Let&apos;s talk
+              ./contact
             </a>
 
             <button
@@ -105,7 +140,7 @@ export function Navbar() {
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className="glass grid size-11 place-items-center rounded-full text-fg lg:hidden"
+              className="panel grid size-10 place-items-center rounded-md text-fg lg:hidden"
             >
               {open ? <X className="size-4" /> : <Menu className="size-4" />}
             </button>
@@ -119,28 +154,26 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[74] bg-ink/85 backdrop-blur-xl lg:hidden"
+            className="fixed inset-0 z-[74] bg-ink/90 backdrop-blur-xl lg:hidden"
             onClick={() => setOpen(false)}
             data-lenis-prevent
           >
             {/* 8 links are ~504px tall — taller than a landscape phone. The
                 scroll container is this div; the list uses min-h-full so
-                justify-center only centres when there IS spare room. With
-                h-full + justify-center the overflow above the centre line is
-                unreachable, which stranded the first two links. */}
+                justify-center only centres when there IS spare room. */}
             <div
               data-lenis-prevent
               className="h-full overflow-y-auto overscroll-contain"
             >
               <motion.ul
-                className="flex min-h-full flex-col items-center justify-center gap-2 px-6 py-24"
+                className="flex min-h-full flex-col items-center justify-center gap-2 px-6 py-24 font-mono"
                 initial="hidden"
                 animate="show"
                 variants={{
                   show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } },
                 }}
               >
-                {navLinks.map((link) => (
+                {navLinks.map((link, i) => (
                   <motion.li
                     key={link.id}
                     variants={{
@@ -152,12 +185,13 @@ export function Navbar() {
                       href={`#${link.id}`}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "block px-6 py-3 text-2xl font-medium tracking-tight transition-colors",
-                        active === link.id
-                          ? "text-gradient"
-                          : "text-muted hover:text-fg",
+                        "flex items-baseline gap-3 px-6 py-3 text-2xl tracking-tight transition-colors",
+                        active === link.id ? "text-cyan" : "text-muted hover:text-fg",
                       )}
                     >
+                      <span className="text-sm text-faint">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
                       {link.label}
                     </a>
                   </motion.li>

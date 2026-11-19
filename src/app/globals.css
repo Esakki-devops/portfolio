@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
-/* Tailwind v4 is CSS-first: the design tokens live here, not in a JS config. */
+/* Tailwind v4 is CSS-first: the design tokens live here, not in a JS config.
+   This portfolio uses a "command-center" visual language — a dark console with
+   HUD panels, status LEDs, hairline grids and monospace chrome. */
 @theme {
-  --color-ink: #050505;
+  --color-ink: #050608;
+  --color-panel: #0a0c11;
   --color-fg: #ecedf2;
   --color-muted: #9698a8;
   /* #6e7080 measured 4.17:1 on --color-ink, under the 4.5:1 WCAG AA floor for
@@ -10,10 +13,17 @@
      for the slightly lighter glass surfaces. */
   --color-faint: #7e8090;
   --color-line: color-mix(in oklab, #ffffff 11%, transparent);
+  --color-line-bright: color-mix(in oklab, #ffffff 20%, transparent);
 
   --color-blue: #3b82f6;
   --color-cyan: #22d3ee;
   --color-purple: #a855f7;
+
+  /* Status palette — the command-center signal colours. */
+  --color-ok: #34d399;
+  --color-warn: #fbbf24;
+  --color-err: #f87171;
+  --color-term: #7ee787;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -32,6 +42,26 @@ body {
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Faint CRT scanlines over the whole console. Fixed + pointer-events-none +
+   a cheap repeating-gradient on a promoted layer, so it costs nothing to
+   scroll. Kept very low opacity so text stays crisp. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    color-mix(in oklab, #000 55%, transparent) 3px,
+    transparent 4px
+  );
+  opacity: 0.035;
+  mix-blend-mode: multiply;
 }
 
 /* Lenis owns the scroll position, so let it drive rather than CSS smoothing. */
@@ -60,15 +90,18 @@ html.lenis body {
 }
 
 @layer utilities {
+  /* Glass → tuned toward a flat console panel: darker fill, crisper hairline,
+     a faint top inset highlight so panels catch "screen light". */
   .glass {
     background: linear-gradient(
       160deg,
-      color-mix(in oklab, #fff 7%, transparent),
-      color-mix(in oklab, #fff 2%, transparent)
+      color-mix(in oklab, #fff 6%, transparent),
+      color-mix(in oklab, var(--color-panel) 60%, transparent)
     );
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(135%);
+    -webkit-backdrop-filter: blur(18px) saturate(135%);
     border: 1px solid var(--color-line);
+    box-shadow: inset 0 1px 0 color-mix(in oklab, #fff 7%, transparent);
   }
 
   /* backdrop-filter is the most expensive thing on this page and there are
@@ -78,8 +111,87 @@ html.lenis body {
     .glass {
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
-      background: color-mix(in oklab, #fff 6%, var(--color-ink) 70%);
+      background: color-mix(in oklab, #fff 5%, var(--color-ink) 72%);
     }
+  }
+
+  /* A HUD panel: a solid console surface with a bright hairline. The default
+     card chrome for the command-center theme. */
+  .panel {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, #fff 4%, var(--color-panel)),
+        var(--color-panel)
+      );
+    border: 1px solid var(--color-line);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, #fff 6%, transparent),
+      0 24px 60px -40px #000;
+  }
+
+  /* Corner brackets drawn as a masked frame — the "targeting reticle" look.
+     Purely decorative, no layout cost. Add `corner-frame` to any positioned
+     box; it brightens on group-hover when nested in a `group`. */
+  .corner-frame::before,
+  .corner-frame::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--color-cyan);
+    opacity: 0.45;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .corner-frame::before {
+    top: 7px;
+    left: 7px;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .corner-frame::after {
+    right: 7px;
+    bottom: 7px;
+    border-left: 0;
+    border-top: 0;
+  }
+
+  .group:hover .corner-frame::before,
+  .group:hover .corner-frame::after {
+    opacity: 0.9;
+  }
+
+  /* Status LED — a glowing dot that pulses. Colour via `--led` (defaults ok). */
+  .led {
+    --led: var(--color-ok);
+    position: relative;
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--led);
+    box-shadow: 0 0 10px -1px var(--led);
+  }
+
+  .led::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--led);
+    animation: led-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  /* Monospace label — the small uppercase HUD captions. */
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-faint);
   }
 
   .text-gradient {
@@ -108,7 +220,7 @@ html.lenis body {
     padding: 1px;
     background: linear-gradient(
       140deg,
-      color-mix(in oklab, var(--color-blue) 55%, transparent),
+      color-mix(in oklab, var(--color-cyan) 60%, transparent),
       transparent 42%,
       color-mix(in oklab, var(--color-purple) 45%, transparent)
     );
@@ -165,6 +277,14 @@ html.lenis body {
   }
 }
 
+@keyframes led-ping {
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
 /* Translate-only drift. Animating scale() re-rasterised the 120px-blur layer
    every frame — the main sustained frame-drop on desktop. A pure translate on a
    promoted layer is compositor-only, so the blobs stay smooth at 60fps. */
@@ -193,6 +313,16 @@ html.lenis body {
   }
   100% {
     background-position: 200% 50%;
+  }
+}
+
+/* Vertical HUD sweep — a scan bar that travels down a panel. */
+@keyframes scan-y {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
   }
 }
 

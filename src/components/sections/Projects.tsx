@@ -33,8 +33,8 @@ function ProjectCard({ p }: { p: Project }) {
         </span>
 
         {p.featured && (
-          <span className="absolute top-2.5 left-2.5 rounded-full border border-line bg-ink/70 px-2.5 py-1 text-[10px] tracking-wider text-cyan uppercase">
-            Featured
+          <span className="absolute top-2.5 left-2.5 rounded border border-cyan/30 bg-ink/70 px-2 py-0.5 font-mono text-[10px] tracking-wider text-cyan lowercase">
+            ★ featured
           </span>
         )}
 
@@ -59,7 +59,7 @@ function ProjectCard({ p }: { p: Project }) {
         {p.tags.map((tag) => (
           <li
             key={tag}
-            className="rounded-full border border-line bg-white/4 px-2.5 py-1 font-mono text-[11px] text-muted"
+            className="rounded border border-line bg-cyan/[0.04] px-2 py-1 font-mono text-[11px] text-muted"
           >
             {tag}
           </li>

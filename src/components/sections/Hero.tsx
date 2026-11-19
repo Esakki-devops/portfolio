@@ -15,6 +15,14 @@ const rise = {
   show: { opacity: 1, y: 0, filter: "blur(0px)" },
 };
 
+/** Factual command-center readouts — all true of the real fleet. */
+const hud = [
+  { k: "nodes", v: "4" },
+  { k: "mesh", v: "WireGuard" },
+  { k: "pipeline", v: "CI/CD" },
+  { k: "uptime", v: "24/7" },
+];
+
 export function Hero() {
   const reduced = useReducedMotion();
   // Let the preloader finish before the hero animates in.
@@ -42,23 +50,20 @@ export function Hero() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-wrap items-center gap-3"
           >
-            <Avatar size={56} eager />
-            <span className="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs tracking-wide text-muted">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-cyan opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-cyan" />
-              </span>
-              Open to DevOps &amp; Cloud roles
+            <Avatar size={52} eager />
+            <span className="inline-flex items-center gap-2.5 rounded-md border border-line bg-panel/60 px-3.5 py-2 font-mono text-xs tracking-tight text-muted">
+              <span className="led" />
+              open to DevOps &amp; Cloud roles
             </span>
           </motion.div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <motion.p
               variants={rise}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-lg text-muted sm:text-xl"
+              className="font-mono text-sm text-cyan"
             >
-              Hello, I&apos;m
+              <span className="text-faint">$</span> whoami
             </motion.p>
 
             <motion.h1
@@ -72,9 +77,13 @@ export function Hero() {
             <motion.p
               variants={rise}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="pt-3 font-mono text-lg tracking-tight text-fg sm:text-2xl"
+              className="pt-1 font-mono text-lg tracking-tight text-fg sm:text-2xl"
             >
               {site.roleLong}
+              <span
+                className="ml-1 inline-block h-5 w-2.5 translate-y-0.5 bg-cyan align-middle"
+                style={{ animation: "caret 1.1s step-end infinite" }}
+              />
             </motion.p>
           </div>
 
@@ -86,6 +95,27 @@ export function Hero() {
             {site.tagline}
           </motion.p>
 
+          {/* HUD stat strip — the "super DevOps" readout. */}
+          <motion.dl
+            variants={rise}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="grid w-full max-w-xl grid-cols-4 overflow-hidden rounded-lg border border-line bg-panel/50 font-mono"
+          >
+            {hud.map((h, i) => (
+              <div
+                key={h.k}
+                className={`px-3 py-3 ${i > 0 ? "border-l border-line" : ""}`}
+              >
+                <dd className="text-lg font-semibold text-cyan sm:text-xl">
+                  {h.v}
+                </dd>
+                <dt className="mt-0.5 text-[10px] tracking-[0.12em] text-faint uppercase">
+                  {h.k}
+                </dt>
+              </div>
+            ))}
+          </motion.dl>
+
           <motion.div
             variants={rise}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -93,15 +123,15 @@ export function Hero() {
           >
             <MagneticButton href={site.resumeHref} download variant="primary">
               <Download className="size-4" />
-              Download Resume
+              resume.pdf
             </MagneticButton>
             <MagneticButton href="#projects">
               <FolderGit2 className="size-4" />
-              View Projects
+              ./projects
             </MagneticButton>
             <MagneticButton href="#contact">
               <Mail className="size-4" />
-              Contact Me
+              ./contact
             </MagneticButton>
           </motion.div>
         </motion.div>
@@ -127,7 +157,7 @@ export function Hero() {
         className="absolute inset-x-0 bottom-7 flex flex-col items-center gap-2 text-faint"
       >
         <span className="font-mono text-[10px] tracking-[0.3em] uppercase">
-          Scroll
+          scroll
         </span>
         <span className="h-9 w-px bg-[linear-gradient(to_bottom,var(--color-cyan),transparent)]" />
       </motion.div>

@@ -5,15 +5,18 @@ import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-mot
 import { useFinePointer } from "@/lib/useMediaQuery";
 
 /**
- * Card with pointer tilt and a spotlight that follows the cursor.
+ * HUD panel with pointer tilt, a cursor-tracking spotlight and corner brackets.
  *
  * Only transform and a background gradient change, both of which stay off the
  * layout path. Disabled entirely for touch and reduced-motion users.
+ *
+ * `glow-ring` and `corner-frame` both draw with ::before, so the brackets live
+ * on a nested span to avoid the pseudo-element clash.
  */
 export function TiltCard({
   children,
   className = "",
-  glow = "#3b82f6",
+  glow = "#22d3ee",
   intensity = 8,
 }: {
   children: ReactNode;
@@ -29,7 +32,7 @@ export function TiltCard({
   const px = useMotionValue(50);
   const py = useMotionValue(50);
 
-  const spotlight = useMotionTemplate`radial-gradient(340px circle at ${px}% ${py}%, color-mix(in oklab, ${glow} 22%, transparent), transparent 72%)`;
+  const spotlight = useMotionTemplate`radial-gradient(340px circle at ${px}% ${py}%, color-mix(in oklab, ${glow} 20%, transparent), transparent 72%)`;
 
   const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!fine || !ref.current) return;
@@ -59,7 +62,7 @@ export function TiltCard({
         rotateY: fine ? ry : 0,
         transformPerspective: 1100,
       }}
-      className={`glass glow-ring group relative overflow-hidden rounded-2xl ${className}`}
+      className={`panel glow-ring group relative overflow-hidden rounded-xl ${className}`}
     >
       {fine && (
         <motion.span
@@ -68,6 +71,7 @@ export function TiltCard({
           style={{ background: spotlight }}
         />
       )}
+      <span aria-hidden className="corner-frame pointer-events-none absolute inset-0" />
       <div className="relative">{children}</div>
     </motion.div>
   );

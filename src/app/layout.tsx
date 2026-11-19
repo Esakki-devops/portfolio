@@ -124,6 +124,25 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
 
+        {/* Command-center viewport frame — a faint HUD border with corner
+            reticles. Fixed, non-interactive, desktop-only. */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-[55] hidden md:block"
+        >
+          <div
+            className="absolute inset-3 rounded-lg border"
+            style={{
+              borderColor:
+                "color-mix(in oklab, var(--color-cyan) 8%, transparent)",
+            }}
+          />
+          <span className="absolute top-3 left-3 size-4 border-t border-l border-cyan/30" />
+          <span className="absolute top-3 right-3 size-4 border-t border-r border-cyan/30" />
+          <span className="absolute bottom-3 left-3 size-4 border-b border-l border-cyan/30" />
+          <span className="absolute right-3 bottom-3 size-4 border-r border-b border-cyan/30" />
+        </div>
+
         <Backdrop />
         <CursorGlow />
         <Preloader />

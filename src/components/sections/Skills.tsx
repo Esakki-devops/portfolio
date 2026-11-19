@@ -22,7 +22,7 @@ export function Skills() {
           <Reveal key={cat.title} delay={(i % 3) * 0.07}>
             <TiltCard className="h-full p-6" glow="#22d3ee" intensity={6}>
               <div className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-xl border border-line bg-white/5 text-cyan">
+                <span className="grid size-10 place-items-center rounded-md border border-line bg-cyan/5 text-cyan">
                   <Icon name={cat.icon} className="size-5" />
                 </span>
                 <h3 className="text-base font-medium tracking-tight text-fg">
@@ -43,9 +43,9 @@ export function Skills() {
                         {skill.level}%
                       </span>
                     </div>
-                    <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/8">
+                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-sm border border-line bg-ink/60">
                       <motion.div
-                        className="h-full rounded-full bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan))]"
+                        className="h-full rounded-sm bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan))]"
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level}%` }}
                         viewport={{ once: true, margin: "-60px" }}

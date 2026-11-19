@@ -20,7 +20,10 @@ import { contactSchema, type ContactValues } from "@/lib/contact-schema";
 import { site } from "@/lib/site";
 
 const fieldClass =
-  "w-full rounded-xl border border-line bg-white/4 px-4 py-3 text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-cyan/50";
+  "w-full rounded-md border border-line bg-ink/50 px-4 py-3 font-mono text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-cyan/60";
+
+const labelClass =
+  "mb-1.5 block font-mono text-[11px] tracking-[0.14em] text-faint uppercase";
 
 export function Contact() {
   const toast = useToast();
@@ -76,9 +79,9 @@ export function Contact() {
       <div className="mt-16 grid gap-6 lg:grid-cols-[0.85fr_1fr]">
         <div className="space-y-4">
           <Reveal>
-            <div className="glass glow-ring rounded-2xl p-6">
-              <h3 className="text-sm font-medium tracking-tight text-fg">
-                Direct channels
+            <div className="panel glow-ring rounded-lg p-6">
+              <h3 className="font-mono text-sm tracking-tight text-fg">
+                <span className="text-faint">~/</span>direct-channels
               </h3>
               <ul className="mt-5 space-y-3.5">
                 <li>
@@ -86,7 +89,7 @@ export function Contact() {
                     href={`mailto:${site.email}`}
                     className="flex items-center gap-3 text-sm text-muted transition-colors hover:text-cyan"
                   >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-line bg-white/4 text-cyan">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-ink/50 text-cyan">
                       <Mail className="size-4" />
                     </span>
                     {/* break-all, not truncate: the address is 28 chars with no
@@ -99,14 +102,14 @@ export function Contact() {
                     href={`tel:${site.phoneHref}`}
                     className="flex items-center gap-3 text-sm text-muted transition-colors hover:text-cyan"
                   >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-line bg-white/4 text-blue">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-ink/50 text-blue">
                       <Phone className="size-4" />
                     </span>
                     {site.phone}
                   </a>
                 </li>
                 <li className="flex items-center gap-3 text-sm text-muted">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-line bg-white/4 text-purple">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-ink/50 text-purple">
                     <MapPin className="size-4" />
                   </span>
                   {site.location}
@@ -119,7 +122,7 @@ export function Contact() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="GitHub profile"
-                  className="grid size-11 place-items-center rounded-xl border border-line bg-white/4 text-muted transition-colors hover:text-cyan"
+                  className="grid size-11 place-items-center rounded-md border border-line bg-ink/50 text-muted transition-colors hover:text-cyan"
                 >
                   <GithubIcon className="size-4" />
                 </a>
@@ -128,14 +131,14 @@ export function Contact() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label="LinkedIn profile"
-                  className="grid size-11 place-items-center rounded-xl border border-line bg-white/4 text-muted transition-colors hover:text-cyan"
+                  className="grid size-11 place-items-center rounded-md border border-line bg-ink/50 text-muted transition-colors hover:text-cyan"
                 >
                   <LinkedinIcon className="size-4" />
                 </a>
                 <a
                   href={site.resumeHref}
                   download
-                  className="inline-flex items-center gap-2 rounded-xl border border-line bg-white/4 px-3.5 py-2.5 text-xs text-muted transition-colors hover:text-cyan"
+                  className="inline-flex items-center gap-2 rounded-md border border-line bg-ink/50 px-3.5 py-2.5 text-xs text-muted transition-colors hover:text-cyan"
                 >
                   <Download className="size-3.5" />
                   Resume
@@ -145,14 +148,11 @@ export function Contact() {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <div className="glass relative overflow-hidden rounded-2xl p-6">
+            <div className="panel relative overflow-hidden rounded-lg p-6">
               <div aria-hidden className="grid-bg absolute inset-0 opacity-30" />
               <div className="relative flex items-center gap-3">
-                <span className="relative flex size-2.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-cyan opacity-75" />
-                  <span className="relative inline-flex size-2.5 rounded-full bg-cyan" />
-                </span>
-                <p className="text-sm text-fg">{site.location}</p>
+                <span className="led" />
+                <p className="font-mono text-sm text-fg">{site.location}</p>
               </div>
               <p className="relative mt-2 text-xs text-muted">
                 Available for remote and on-site roles across India.
@@ -165,13 +165,17 @@ export function Contact() {
           <form
             onSubmit={handleFormSubmit}
             noValidate
-            className="glass glow-ring rounded-2xl p-6 sm:p-7"
+            className="panel glow-ring rounded-lg p-6 sm:p-7"
           >
+            <div className="mb-5 flex items-center gap-2 border-b border-line pb-4 font-mono text-xs text-faint">
+              <span className="led" style={{ ["--led" as string]: "var(--color-cyan)" }} />
+              esakki@portfolio: ~/contact $ ./new-message
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label
                   htmlFor="name"
-                  className="mb-1.5 block text-[11px] tracking-[0.16em] text-faint uppercase"
+                  className={labelClass}
                 >
                   Name
                 </label>
@@ -194,7 +198,7 @@ export function Contact() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-1.5 block text-[11px] tracking-[0.16em] text-faint uppercase"
+                  className={labelClass}
                 >
                   Email
                 </label>
@@ -219,7 +223,7 @@ export function Contact() {
             <div className="mt-4">
               <label
                 htmlFor="subject"
-                className="mb-1.5 block text-[11px] tracking-[0.16em] text-faint uppercase"
+                className={labelClass}
               >
                 Subject
               </label>
@@ -241,7 +245,7 @@ export function Contact() {
             <div className="mt-4">
               <label
                 htmlFor="message"
-                className="mb-1.5 block text-[11px] tracking-[0.16em] text-faint uppercase"
+                className={labelClass}
               >
                 Message
               </label>
@@ -264,17 +268,17 @@ export function Contact() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(100deg,var(--color-blue),var(--color-cyan))] px-6 py-3.5 text-sm font-medium text-[#03121f] transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[linear-gradient(100deg,var(--color-blue),var(--color-cyan))] px-6 py-3.5 font-mono text-sm font-medium text-[#03121f] transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>
                   <LoaderCircle className="size-4 animate-spin" />
-                  Sending…
+                  sending…
                 </>
               ) : (
                 <>
                   <Send className="size-4" />
-                  Send message
+                  ./send-message
                 </>
               )}
             </button>

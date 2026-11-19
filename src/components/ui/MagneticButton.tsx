@@ -15,7 +15,8 @@ type Props = {
   ariaLabel?: string;
 };
 
-/** Button that leans slightly toward the cursor. Transform-only. */
+/** Button that leans slightly toward the cursor. Transform-only. Styled as a
+    console key: sharp corners, monospace label, HUD hairline. */
 export function MagneticButton({
   children,
   href,
@@ -44,10 +45,10 @@ export function MagneticButton({
   };
 
   const classes = cn(
-    "relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-tight transition-colors",
+    "relative inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 font-mono text-sm tracking-tight transition-colors",
     variant === "primary"
-      ? "bg-[linear-gradient(100deg,var(--color-blue),var(--color-cyan))] text-[#03121f] hover:brightness-110"
-      : "glass text-fg hover:bg-white/8",
+      ? "bg-[linear-gradient(100deg,var(--color-blue),var(--color-cyan))] font-medium text-[#03121f] hover:brightness-110"
+      : "border border-line bg-panel/60 text-fg hover:border-[color-mix(in_oklab,var(--color-cyan)_55%,transparent)] hover:text-cyan",
     className,
   );
 
@@ -57,7 +58,7 @@ export function MagneticButton({
       {variant === "primary" && (
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_38px_-6px_var(--color-cyan)] transition-opacity duration-400 hover:opacity-100"
+          className="pointer-events-none absolute inset-0 rounded-md opacity-0 shadow-[0_0_38px_-6px_var(--color-cyan)] transition-opacity duration-400 hover:opacity-100"
         />
       )}
     </>

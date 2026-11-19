@@ -20,14 +20,23 @@ export function Section({
   );
 }
 
-/** Animated hairline between sections. */
+/** Command-line divider between sections — a hairline bus with a mono node. */
 export function Divider() {
   return (
     <div aria-hidden className="mx-auto max-w-6xl px-6">
-      <div
-        className="h-px w-full bg-[linear-gradient(90deg,transparent,var(--color-blue),var(--color-cyan),var(--color-purple),transparent)] bg-[length:200%_100%] opacity-45"
-        style={{ animation: "line-sweep 9s linear infinite" }}
-      />
+      <div className="flex items-center gap-3 opacity-60">
+        <span
+          className="h-px flex-1 bg-[linear-gradient(90deg,transparent,var(--color-line-bright))]"
+        />
+        <span className="led" style={{ ["--led" as string]: "var(--color-cyan)" }} />
+        <span className="font-mono text-[10px] tracking-[0.3em] text-faint uppercase">
+          //
+        </span>
+        <span className="led" style={{ ["--led" as string]: "var(--color-purple)" }} />
+        <span
+          className="h-px flex-1 bg-[linear-gradient(90deg,var(--color-line-bright),transparent)]"
+        />
+      </div>
     </div>
   );
 }
