@@ -165,16 +165,19 @@ html.lenis body {
   }
 }
 
+/* Translate-only drift. Animating scale() re-rasterised the 120px-blur layer
+   every frame — the main sustained frame-drop on desktop. A pure translate on a
+   promoted layer is compositor-only, so the blobs stay smooth at 60fps. */
 @keyframes aurora-drift {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
   33% {
-    transform: translate3d(3%, -4%, 0) scale(1.06);
+    transform: translate3d(4%, -5%, 0);
   }
   66% {
-    transform: translate3d(-3%, 3%, 0) scale(0.96);
+    transform: translate3d(-4%, 4%, 0);
   }
 }
 

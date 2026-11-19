@@ -14,7 +14,8 @@ export function About() {
     target: railRef,
     offset: ["start 75%", "end 55%"],
   });
-  const railHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // scaleY (GPU) instead of height% — avoids layout + paint on every scroll frame.
+  const railScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
     <Section id="about">
@@ -76,8 +77,8 @@ export function About() {
           />
           <motion.div
             aria-hidden
-            style={{ height: railHeight }}
-            className="absolute top-1 left-[7px] w-px bg-[linear-gradient(to_bottom,var(--color-blue),var(--color-cyan))] shadow-[0_0_12px_var(--color-cyan)]"
+            style={{ scaleY: railScale, transformOrigin: "top", willChange: "transform" }}
+            className="absolute top-1 left-[7px] h-full w-px bg-[linear-gradient(to_bottom,var(--color-blue),var(--color-cyan))] shadow-[0_0_12px_var(--color-cyan)]"
           />
 
           {aboutTimeline.map((item, i) => (

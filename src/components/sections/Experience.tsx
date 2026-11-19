@@ -26,7 +26,9 @@ export function Experience() {
     target: railRef,
     offset: ["start 70%", "end 60%"],
   });
-  const railHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // scaleY (GPU, compositor-only) instead of animating height% — the latter
+  // re-ran layout + paint on the rail every scroll frame.
+  const railScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
     <Section id="experience">
@@ -43,8 +45,8 @@ export function Experience() {
         />
         <motion.div
           aria-hidden
-          style={{ height: railHeight }}
-          className="absolute top-2 left-[15px] w-px bg-[linear-gradient(to_bottom,var(--color-blue),var(--color-cyan),var(--color-purple))] shadow-[0_0_12px_var(--color-cyan)] sm:left-[23px]"
+          style={{ scaleY: railScale, transformOrigin: "top", willChange: "transform" }}
+          className="absolute top-2 left-[15px] h-full w-px bg-[linear-gradient(to_bottom,var(--color-blue),var(--color-cyan),var(--color-purple))] shadow-[0_0_12px_var(--color-cyan)] sm:left-[23px]"
         />
 
         {experience.map((job, i) => (

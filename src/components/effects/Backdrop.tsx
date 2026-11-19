@@ -78,29 +78,29 @@ export function Backdrop() {
           element is a large texture for a mobile GPU to keep resident. */}
       <div
         className="absolute top-[-18%] left-[-8%] size-[24rem] md:size-[46rem]"
-        style={{ animation: "aurora-drift 26s ease-in-out infinite" }}
+        style={{ animation: "aurora-drift 26s ease-in-out infinite", willChange: "transform" }}
       >
         <motion.div
-          className="size-full rounded-full bg-blue/20 blur-[70px] md:blur-[120px]"
-          style={{ x: blobAx, y: blobAy }}
+          className="size-full rounded-full bg-blue/20 blur-[70px] md:blur-[90px]"
+          style={{ x: blobAx, y: blobAy, willChange: "transform" }}
         />
       </div>
       <div
         className="absolute top-[20%] right-[-14%] size-[22rem] md:size-[40rem]"
-        style={{ animation: "aurora-drift 32s ease-in-out -7s infinite" }}
+        style={{ animation: "aurora-drift 32s ease-in-out -7s infinite", willChange: "transform" }}
       >
         <motion.div
-          className="size-full rounded-full bg-purple/18 blur-[70px] md:blur-[120px]"
-          style={{ x: blobBx, y: blobBy }}
+          className="size-full rounded-full bg-purple/18 blur-[70px] md:blur-[90px]"
+          style={{ x: blobBx, y: blobBy, willChange: "transform" }}
         />
       </div>
       <div
         className="absolute bottom-[-16%] left-[24%] hidden size-[38rem] md:block"
-        style={{ animation: "aurora-drift 38s ease-in-out -14s infinite" }}
+        style={{ animation: "aurora-drift 38s ease-in-out -14s infinite", willChange: "transform" }}
       >
         <motion.div
-          className="size-full rounded-full bg-cyan/14 blur-[120px]"
-          style={{ x: blobCx, y: blobCy }}
+          className="size-full rounded-full bg-cyan/14 blur-[90px]"
+          style={{ x: blobCx, y: blobCy, willChange: "transform" }}
         />
       </div>
 
@@ -112,6 +112,7 @@ export function Backdrop() {
           style={{
             x: gridLeft,
             y: gridTop,
+            willChange: "transform",
             width: GRID_PATCH,
             height: GRID_PATCH,
             // Anchoring the pattern to the viewport keeps the grid lines still
