@@ -1,8 +1,5 @@
-"use client";
-
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { useIsDesktop } from "@/lib/useMediaQuery";
 import { orbitTech } from "@/lib/data";
 
 // Ring diameters are fractions of --orbit so the whole system scales with the
@@ -18,14 +15,13 @@ const RINGS = [
 const diameter = (s: number) => `calc(var(--orbit) * ${s})`;
 const radiusNeg = (s: number) => `calc(var(--orbit) * ${s} / -2)`;
 
+/**
+ * Desktop shows the animated orbit; mobile shows a static chip grid instead.
+ * The two are toggled purely by breakpoint (`hidden md:flex` / `md:hidden`), so
+ * the orbit is `display:none` on phones — its CSS spin animations never tick and
+ * cost nothing there — and there's no JS/hydration swap. No "use client" needed.
+ */
 export function TechOrbit() {
-  // Mobile is the weak spot: 12 chips each carry a blurred box-shadow, and a
-  // box-shadow on a spinning layer re-rasterises every frame. On phones we drop
-  // the glow, shrink the hub blur and slow the spin — the orbit stays, just
-  // lighter — while desktop keeps the full effect.
-  const desktop = useIsDesktop();
-  const slow = desktop ? 1 : 1.5;
-
   return (
     <section id="stack" className="relative scroll-mt-24 px-6 py-24 sm:py-28">
       <div className="mx-auto w-full max-w-6xl">
@@ -35,20 +31,38 @@ export function TechOrbit() {
           description="Systems, cloud, containers and monitoring — the stack behind my support work and personal projects."
         />
 
-        <Reveal className="mt-14 flex justify-center">
+        {/* Mobile: static HUD grid of the stack. */}
+        <Reveal className="mt-12 md:hidden">
+          <ul className="mx-auto grid max-w-md grid-cols-2 gap-2.5 sm:grid-cols-3">
+            {orbitTech.map((tech) => (
+              <li
+                key={tech.name}
+                className="panel flex items-center gap-2 rounded-md px-2.5 py-2.5 font-mono text-[11px]"
+              >
+                <span
+                  className="size-1.5 shrink-0 rounded-full"
+                  style={{
+                    background: tech.color,
+                    boxShadow: `0 0 8px -1px ${tech.color}`,
+                  }}
+                />
+                <span className="truncate text-fg">{tech.name}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
+        {/* Desktop: animated orbit. */}
+        <Reveal className="mt-14 hidden justify-center md:flex">
           <div
             className="relative grid size-[var(--orbit)] place-items-center"
-            // Larger share of the viewport on phones so the outer labels have
-            // room instead of clipping the container edge.
-            style={{ ["--orbit" as string]: "min(30rem, 88vw)" }}
+            style={{ ["--orbit" as string]: "min(32rem, 70vw)" }}
             role="img"
             aria-label={`Technology stack: ${orbitTech.map((t) => t.name).join(", ")}`}
           >
             <div
               aria-hidden
-              className={`absolute size-56 rounded-full bg-blue/14 ${
-                desktop ? "blur-[70px]" : "blur-[36px]"
-              }`}
+              className="absolute size-56 rounded-full bg-blue/14 blur-[70px]"
             />
 
             {RINGS.map((ring, ri) => (
@@ -62,16 +76,14 @@ export function TechOrbit() {
 
             {RINGS.map((ring, ri) => {
               const items = orbitTech.filter((t) => t.ring === ri);
-              // Ring spin and the label counter-spin are plain CSS animations
-              // (spin-slow keyframe), so they run entirely on the compositor —
-              // no per-frame JavaScript. The counter-spin runs opposite to
-              // cancel the ring's rotation; the inner static rotate(-angle)
-              // keeps each label upright. (prefers-reduced-motion halts them.)
-              const dur = ring.duration * slow;
-              const spin = `spin-slow ${dur}s linear infinite${
+              // Ring spin + label counter-spin are plain CSS animations
+              // (spin-slow keyframe) — compositor-only, no per-frame JS. The
+              // counter-spin cancels the ring's rotation; the inner static
+              // rotate(-angle) keeps each label upright. (reduced-motion halts.)
+              const spin = `spin-slow ${ring.duration}s linear infinite${
                 ring.reverse ? " reverse" : ""
               }`;
-              const counter = `spin-slow ${dur}s linear infinite${
+              const counter = `spin-slow ${ring.duration}s linear infinite${
                 ring.reverse ? "" : " reverse"
               }`;
               return (
@@ -102,15 +114,12 @@ export function TechOrbit() {
                             style={{ animation: counter, willChange: "transform" }}
                           >
                             <span
-                              className="block rounded-lg border bg-white/6 px-2.5 py-1.5 font-mono text-[10px] whitespace-nowrap sm:text-[11px]"
+                              className="block rounded-lg border bg-white/6 px-2.5 py-1.5 font-mono text-[11px] whitespace-nowrap"
                               style={{
                                 transform: `rotate(${-angle}deg)`,
                                 color: tech.color,
                                 borderColor: `color-mix(in oklab, ${tech.color} 35%, transparent)`,
-                                // Glow is the heavy per-frame paint on mobile.
-                                boxShadow: desktop
-                                  ? `0 0 24px -8px ${tech.color}`
-                                  : "none",
+                                boxShadow: `0 0 24px -8px ${tech.color}`,
                               }}
                             >
                               {tech.name}
@@ -124,8 +133,6 @@ export function TechOrbit() {
               );
             })}
 
-            {/* Scales with the orbit. Pinned at a fixed 112px it was wider than
-                ring 0 on phones, burying the inner labels underneath. */}
             <div className="glass relative z-10 grid size-[calc(var(--orbit)*0.23)] place-items-center rounded-full text-center">
               <div>
                 <p className="text-[0.6rem] tracking-[0.2em] text-faint uppercase sm:text-xs">
