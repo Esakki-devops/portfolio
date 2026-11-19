@@ -30,7 +30,7 @@ export function Divider() {
         />
         <span className="led" style={{ ["--led" as string]: "var(--color-cyan)" }} />
         <span className="font-mono text-[10px] tracking-[0.3em] text-faint uppercase">
-          //
+          {"//"}
         </span>
         <span className="led" style={{ ["--led" as string]: "var(--color-purple)" }} />
         <span

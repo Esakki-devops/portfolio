@@ -2,6 +2,7 @@
 
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { useIsDesktop } from "@/lib/useMediaQuery";
 import { orbitTech } from "@/lib/data";
 
 // Ring diameters are fractions of --orbit so the whole system scales with the
@@ -18,6 +19,13 @@ const diameter = (s: number) => `calc(var(--orbit) * ${s})`;
 const radiusNeg = (s: number) => `calc(var(--orbit) * ${s} / -2)`;
 
 export function TechOrbit() {
+  // Mobile is the weak spot: 12 chips each carry a blurred box-shadow, and a
+  // box-shadow on a spinning layer re-rasterises every frame. On phones we drop
+  // the glow, shrink the hub blur and slow the spin — the orbit stays, just
+  // lighter — while desktop keeps the full effect.
+  const desktop = useIsDesktop();
+  const slow = desktop ? 1 : 1.5;
+
   return (
     <section id="stack" className="relative scroll-mt-24 px-6 py-24 sm:py-28">
       <div className="mx-auto w-full max-w-6xl">
@@ -38,7 +46,9 @@ export function TechOrbit() {
           >
             <div
               aria-hidden
-              className="absolute size-56 rounded-full bg-blue/14 blur-[70px]"
+              className={`absolute size-56 rounded-full bg-blue/14 ${
+                desktop ? "blur-[70px]" : "blur-[36px]"
+              }`}
             />
 
             {RINGS.map((ring, ri) => (
@@ -54,15 +64,14 @@ export function TechOrbit() {
               const items = orbitTech.filter((t) => t.ring === ri);
               // Ring spin and the label counter-spin are plain CSS animations
               // (spin-slow keyframe), so they run entirely on the compositor —
-              // no per-frame JavaScript, which is what kept the orbit smooth on
-              // phones where 15 simultaneous Framer loops used to stutter. The
-              // counter-spin runs in the opposite direction to cancel the ring's
-              // rotation; the inner static rotate(-angle) keeps each label
-              // upright. (prefers-reduced-motion halts all of them via globals.)
-              const spin = `spin-slow ${ring.duration}s linear infinite${
+              // no per-frame JavaScript. The counter-spin runs opposite to
+              // cancel the ring's rotation; the inner static rotate(-angle)
+              // keeps each label upright. (prefers-reduced-motion halts them.)
+              const dur = ring.duration * slow;
+              const spin = `spin-slow ${dur}s linear infinite${
                 ring.reverse ? " reverse" : ""
               }`;
-              const counter = `spin-slow ${ring.duration}s linear infinite${
+              const counter = `spin-slow ${dur}s linear infinite${
                 ring.reverse ? "" : " reverse"
               }`;
               return (
@@ -93,12 +102,15 @@ export function TechOrbit() {
                             style={{ animation: counter, willChange: "transform" }}
                           >
                             <span
-                              className="block rounded-xl border bg-white/6 px-2.5 py-1.5 font-mono text-[10px] whitespace-nowrap sm:text-[11px]"
+                              className="block rounded-lg border bg-white/6 px-2.5 py-1.5 font-mono text-[10px] whitespace-nowrap sm:text-[11px]"
                               style={{
                                 transform: `rotate(${-angle}deg)`,
                                 color: tech.color,
                                 borderColor: `color-mix(in oklab, ${tech.color} 35%, transparent)`,
-                                boxShadow: `0 0 24px -8px ${tech.color}`,
+                                // Glow is the heavy per-frame paint on mobile.
+                                boxShadow: desktop
+                                  ? `0 0 24px -8px ${tech.color}`
+                                  : "none",
                               }}
                             >
                               {tech.name}
