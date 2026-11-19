@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { orbitTech } from "@/lib/data";
@@ -31,7 +30,9 @@ export function TechOrbit() {
         <Reveal className="mt-14 flex justify-center">
           <div
             className="relative grid size-[var(--orbit)] place-items-center"
-            style={{ ["--orbit" as string]: "min(30rem, 82vw)" }}
+            // Larger share of the viewport on phones so the outer labels have
+            // room instead of clipping the container edge.
+            style={{ ["--orbit" as string]: "min(30rem, 88vw)" }}
             role="img"
             aria-label={`Technology stack: ${orbitTech.map((t) => t.name).join(", ")}`}
           >
@@ -51,13 +52,30 @@ export function TechOrbit() {
 
             {RINGS.map((ring, ri) => {
               const items = orbitTech.filter((t) => t.ring === ri);
+              // Ring spin and the label counter-spin are plain CSS animations
+              // (spin-slow keyframe), so they run entirely on the compositor —
+              // no per-frame JavaScript, which is what kept the orbit smooth on
+              // phones where 15 simultaneous Framer loops used to stutter. The
+              // counter-spin runs in the opposite direction to cancel the ring's
+              // rotation; the inner static rotate(-angle) keeps each label
+              // upright. (prefers-reduced-motion halts all of them via globals.)
+              const spin = `spin-slow ${ring.duration}s linear infinite${
+                ring.reverse ? " reverse" : ""
+              }`;
+              const counter = `spin-slow ${ring.duration}s linear infinite${
+                ring.reverse ? "" : " reverse"
+              }`;
               return (
-                <motion.div
+                <div
                   key={ri}
+                  aria-hidden
                   className="absolute"
-                  style={{ width: diameter(ring.scale), height: diameter(ring.scale) }}
-                  animate={{ rotate: ring.reverse ? -360 : 360 }}
-                  transition={{ duration: ring.duration, repeat: Infinity, ease: "linear" }}
+                  style={{
+                    width: diameter(ring.scale),
+                    height: diameter(ring.scale),
+                    animation: spin,
+                    willChange: "transform",
+                  }}
                 >
                   {items.map((tech, i) => {
                     const angle = (i / items.length) * 360;
@@ -69,34 +87,28 @@ export function TechOrbit() {
                           transform: `rotate(${angle}deg) translateY(${radiusNeg(ring.scale)})`,
                         }}
                       >
-                        {/* Cancels both the ring's spin and this item's own
-                            positioning angle, so labels stay upright.
-                            Deliberately NOT .glass: a backdrop-filter on a
-                            continuously rotating element forces the browser to
-                            re-blur the region behind it every frame, twelve
-                            times over. At this chip size the blur is invisible
-                            anyway, so a flat fill costs nothing visually. */}
-                        <motion.span
-                          className="absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl border bg-white/6 px-2.5 py-1.5 font-mono text-[10px] whitespace-nowrap sm:text-[11px]"
-                          style={{
-                            color: tech.color,
-                            borderColor: `color-mix(in oklab, ${tech.color} 35%, transparent)`,
-                            boxShadow: `0 0 24px -8px ${tech.color}`,
-                          }}
-                          initial={{ rotate: -angle }}
-                          animate={{ rotate: ring.reverse ? -angle + 360 : -angle - 360 }}
-                          transition={{
-                            duration: ring.duration,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                        >
-                          {tech.name}
-                        </motion.span>
+                        <div className="absolute -translate-x-1/2 -translate-y-1/2">
+                          <span
+                            className="block"
+                            style={{ animation: counter, willChange: "transform" }}
+                          >
+                            <span
+                              className="block rounded-xl border bg-white/6 px-2.5 py-1.5 font-mono text-[10px] whitespace-nowrap sm:text-[11px]"
+                              style={{
+                                transform: `rotate(${-angle}deg)`,
+                                color: tech.color,
+                                borderColor: `color-mix(in oklab, ${tech.color} 35%, transparent)`,
+                                boxShadow: `0 0 24px -8px ${tech.color}`,
+                              }}
+                            >
+                              {tech.name}
+                            </span>
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
-                </motion.div>
+                </div>
               );
             })}
 

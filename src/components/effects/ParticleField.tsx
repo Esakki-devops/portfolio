@@ -53,9 +53,18 @@ export function ParticleField() {
       }));
     };
 
-    const draw = () => {
+    let last = 0;
+    const draw = (now: number) => {
       if (!running) return;
       raf = requestAnimationFrame(draw);
+
+      // Frame-rate-independent motion. requestAnimationFrame already fires at
+      // the display's native refresh, so on a 120/144Hz screen the field
+      // renders at 120/144fps; scaling velocity by the real frame delta (vs a
+      // 60fps baseline) keeps the visual speed constant instead of running
+      // faster on high-refresh displays.
+      const dt = last ? Math.min(2.5, (now - last) / 16.667) : 1;
+      last = now;
 
       ctx.clearRect(0, 0, width, height);
 
@@ -67,8 +76,8 @@ export function ParticleField() {
       ctx.beginPath();
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
 
         if (p.x < 0 || p.x > width) p.vx *= -1;
         if (p.y < 0 || p.y > height) p.vy *= -1;
@@ -79,8 +88,8 @@ export function ParticleField() {
         if (distSq < 14400 && distSq > 0) {
           const dist = Math.sqrt(distSq);
           const push = (120 - dist) / 120;
-          p.x += (dx / dist) * push * 1.5;
-          p.y += (dy / dist) * push * 1.5;
+          p.x += (dx / dist) * push * 1.5 * dt;
+          p.y += (dy / dist) * push * 1.5 * dt;
         }
 
         const cx = Math.min(cols - 1, Math.max(0, Math.floor(p.x / CELL)));

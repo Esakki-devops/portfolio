@@ -102,6 +102,22 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "inframonitor",
+    title: "InfraMonitor",
+    summary:
+      "Real-time monitoring dashboard for a multi-server fleet over a WireGuard mesh, with a built-in nginx load-balancer manager.",
+    description:
+      "A FastAPI + WebSocket dashboard I built to run a small production fleet behind an Oracle Cloud gateway: live CPU/RAM/disk, WireGuard VPN handshake health, internet-connectivity checks, Docker container status, SSL-expiry tracking, alerting, scheduled scripts, automatic offline-recovery, a web terminal, and a load-balancer page that configures and reloads nginx upstreams across the cluster. Metrics come from a dependency-free agent on each node; the gateway fronts a round-robin app cluster.",
+    tags: ["FastAPI", "WebSockets", "WireGuard", "nginx", "Python", "SQLite"],
+    stats: [
+      { label: "Nodes", value: "4" },
+      { label: "Stack", value: "FastAPI" },
+    ],
+    accent: ["#22d3ee", "#3b82f6"],
+    icon: "Server",
+    featured: true,
+  },
+  {
     slug: "ad-monitoring-dashboard",
     title: "AD Monitoring Dashboard",
     summary:
