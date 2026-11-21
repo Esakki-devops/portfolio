@@ -31,7 +31,7 @@ export function Reveal({
       initial={{ opacity: 0, y, filter: "blur(8px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.75, delay, ease: EASE }}
+      transition={{ duration: 0.45, delay, ease: EASE }}
     >
       {children}
     </motion.div>
@@ -59,7 +59,7 @@ export function RevealWords({
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
       variants={{
-        show: { transition: { staggerChildren: 0.055, delayChildren: delay } },
+        show: { transition: { staggerChildren: 0.04, delayChildren: delay } },
       }}
     >
       {text.split(" ").map((word, i) => (
@@ -70,7 +70,7 @@ export function RevealWords({
             hidden: { opacity: 0, y: 22, filter: "blur(8px)" },
             show: { opacity: 1, y: 0, filter: "blur(0px)" },
           }}
-          transition={{ duration: 0.8, ease: EASE }}
+          transition={{ duration: 0.5, ease: EASE }}
         >
           {word}
           {i < text.split(" ").length - 1 ? " " : ""}
