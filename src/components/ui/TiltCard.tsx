@@ -1,14 +1,13 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { useFinePointer } from "@/lib/useMediaQuery";
 
 /**
- * HUD panel with pointer tilt, a cursor-tracking spotlight and corner brackets.
- *
- * Only transform and a background gradient change, both of which stay off the
- * layout path. Disabled entirely for touch and reduced-motion users.
+ * Flat (2D) HUD panel with a cursor-tracking spotlight and corner brackets.
+ * No 3D tilt — the card stays in the plane; only a background gradient moves,
+ * which stays off the layout path. Disabled entirely for touch pointers.
  *
  * `glow-ring` and `corner-frame` both draw with ::before, so the brackets live
  * on a nested span to avoid the pseudo-element clash.
@@ -17,18 +16,16 @@ export function TiltCard({
   children,
   className = "",
   glow = "#22d3ee",
-  intensity = 8,
 }: {
   children: ReactNode;
   className?: string;
   glow?: string;
+  /** Retained for call-site compatibility; the 3D tilt it drove was removed. */
   intensity?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const fine = useFinePointer();
 
-  const rx = useSpring(0, { stiffness: 190, damping: 20 });
-  const ry = useSpring(0, { stiffness: 190, damping: 20 });
   const px = useMotionValue(50);
   const py = useMotionValue(50);
 
@@ -37,31 +34,20 @@ export function TiltCard({
   const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!fine || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width;
-    const ny = (e.clientY - r.top) / r.height;
-    px.set(nx * 100);
-    py.set(ny * 100);
-    ry.set((nx - 0.5) * intensity * 2);
-    rx.set((0.5 - ny) * intensity * 2);
+    px.set(((e.clientX - r.left) / r.width) * 100);
+    py.set(((e.clientY - r.top) / r.height) * 100);
   };
 
   const onLeave = () => {
-    rx.set(0);
-    ry.set(0);
     px.set(50);
     py.set(50);
   };
 
   return (
-    <motion.div
+    <div
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      style={{
-        rotateX: fine ? rx : 0,
-        rotateY: fine ? ry : 0,
-        transformPerspective: 1100,
-      }}
       className={`panel glow-ring group relative overflow-hidden rounded-xl ${className}`}
     >
       {fine && (
@@ -73,6 +59,6 @@ export function TiltCard({
       )}
       <span aria-hidden className="corner-frame pointer-events-none absolute inset-0" />
       <div className="relative">{children}</div>
-    </motion.div>
+    </div>
   );
 }
