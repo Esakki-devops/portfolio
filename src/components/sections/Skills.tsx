@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { SkillBar } from "@/components/sections/SkillBar";
 import { Icon } from "@/components/icons";
 import { skillCategories } from "@/lib/data";
 
@@ -43,19 +43,7 @@ export function Skills() {
                         {skill.level}%
                       </span>
                     </div>
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/[0.06]">
-                      <motion.div
-                        className="h-full rounded-full bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan))] shadow-[0_0_10px_-1px_var(--color-cyan)]"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true, margin: "-60px" }}
-                        transition={{
-                          duration: 1.1,
-                          ease: [0.16, 1, 0.3, 1],
-                          delay: 0.1,
-                        }}
-                      />
-                    </div>
+                    <SkillBar level={skill.level} />
                   </li>
                 ))}
               </ul>
