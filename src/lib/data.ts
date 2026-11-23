@@ -25,10 +25,10 @@ export const skillCategories: SkillCategory[] = [
     icon: "Terminal",
     blurb: "Day-to-day administration, user management and troubleshooting.",
     skills: [
-      { name: "Windows 10 / 11", level: 88 },
-      { name: "Windows Server", level: 78 },
-      { name: "Ubuntu Linux", level: 82 },
-      { name: "Linux Administration", level: 78 },
+      { name: "Windows 10 / 11", level: 78 },
+      { name: "Windows Server", level: 68 },
+      { name: "Ubuntu Linux", level: 72 },
+      { name: "Linux Administration", level: 68 },
     ],
   },
   {
@@ -36,10 +36,10 @@ export const skillCategories: SkillCategory[] = [
     icon: "Cloud",
     blurb: "AWS core services, hands-on through study and support work.",
     skills: [
-      { name: "AWS EC2", level: 74 },
-      { name: "AWS S3", level: 72 },
-      { name: "IAM & VPC", level: 66 },
-      { name: "Route 53", level: 45 },
+      { name: "AWS EC2", level: 62 },
+      { name: "AWS S3", level: 60 },
+      { name: "IAM & VPC", level: 54 },
+      { name: "Route 53", level: 40 },
     ],
   },
   {
@@ -47,10 +47,10 @@ export const skillCategories: SkillCategory[] = [
     icon: "Network",
     blurb: "CCNA-certified, applied daily to connectivity troubleshooting.",
     skills: [
-      { name: "TCP/IP", level: 85 },
-      { name: "DNS & DHCP", level: 84 },
-      { name: "VLAN & VPN", level: 76 },
-      { name: "Cisco Packet Tracer", level: 74 },
+      { name: "TCP/IP", level: 75 },
+      { name: "DNS & DHCP", level: 74 },
+      { name: "VLAN & VPN", level: 66 },
+      { name: "Cisco Packet Tracer", level: 64 },
     ],
   },
   {
@@ -58,10 +58,10 @@ export const skillCategories: SkillCategory[] = [
     icon: "Container",
     blurb: "Containers and web serving — the foundation I'm building on.",
     skills: [
-      { name: "Docker", level: 76 },
-      { name: "Docker Compose", level: 72 },
-      { name: "Nginx", level: 70 },
-      { name: "Git & GitHub", level: 78 },
+      { name: "Docker", level: 64 },
+      { name: "Docker Compose", level: 60 },
+      { name: "Nginx", level: 60 },
+      { name: "Git & GitHub", level: 70 },
     ],
   },
   {
@@ -69,10 +69,10 @@ export const skillCategories: SkillCategory[] = [
     icon: "Shield",
     blurb: "Log visibility and endpoint security fundamentals.",
     skills: [
-      { name: "Wazuh SIEM", level: 72 },
-      { name: "Log Monitoring", level: 74 },
-      { name: "Firewall Fundamentals", level: 68 },
-      { name: "Active Directory", level: 76 },
+      { name: "Wazuh SIEM", level: 60 },
+      { name: "Log Monitoring", level: 64 },
+      { name: "Firewall Fundamentals", level: 58 },
+      { name: "Active Directory", level: 66 },
     ],
   },
   {
@@ -80,9 +80,9 @@ export const skillCategories: SkillCategory[] = [
     icon: "Braces",
     blurb: "Scripting for automation and small tooling tasks.",
     skills: [
-      { name: "Python", level: 58 },
-      { name: "Bash", level: 52 },
-      { name: "C", level: 55 },
+      { name: "Python", level: 50 },
+      { name: "Bash", level: 46 },
+      { name: "C", level: 48 },
     ],
   },
 ];

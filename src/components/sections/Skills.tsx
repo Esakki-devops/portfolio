@@ -17,9 +17,9 @@ export function Skills() {
         description="Tools I use in support work day to day, plus the cloud and container skills I'm actively building. Levels are honest self-assessments, not exam scores."
       />
 
-      <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-16 grid gap-6 sm:grid-cols-2">
         {skillCategories.map((cat, i) => (
-          <Reveal key={cat.title} delay={(i % 3) * 0.07}>
+          <Reveal key={cat.title} delay={(i % 2) * 0.08}>
             <TiltCard className="h-full p-6" glow="#22d3ee" intensity={6}>
               <div className="flex items-center gap-3">
                 <span className="grid size-10 place-items-center rounded-md border border-line bg-cyan/5 text-cyan">
@@ -43,9 +43,9 @@ export function Skills() {
                         {skill.level}%
                       </span>
                     </div>
-                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-sm border border-line bg-ink/60">
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/[0.06]">
                       <motion.div
-                        className="h-full rounded-sm bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan))]"
+                        className="h-full rounded-full bg-[linear-gradient(90deg,var(--color-blue),var(--color-cyan))] shadow-[0_0_10px_-1px_var(--color-cyan)]"
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level}%` }}
                         viewport={{ once: true, margin: "-60px" }}
