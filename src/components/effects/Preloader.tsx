@@ -12,7 +12,7 @@ const BOOT_LINES = [
   "system ready",
 ];
 
-const DURATION = 1900;
+const DURATION = 700;
 
 /** Boot sequence shown once on first paint. */
 export function Preloader() {
@@ -58,7 +58,7 @@ export function Preloader() {
         <motion.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ink"
           exit={{ opacity: 0, filter: "blur(12px)" }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           role="status"
           aria-label="Loading portfolio"
         >
