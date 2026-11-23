@@ -9,6 +9,7 @@ import { CodeRain } from "@/components/effects/CodeRain";
 import { TerminalWindow } from "@/components/sections/TerminalWindow";
 import { site } from "@/lib/site";
 import { useReducedMotion } from "@/lib/useMediaQuery";
+import { cn } from "@/lib/utils";
 
 const rise = {
   hidden: { opacity: 0, y: 26, filter: "blur(8px)" },
@@ -25,8 +26,10 @@ const hud = [
 
 export function Hero() {
   const reduced = useReducedMotion();
-  // Let the preloader finish before the hero animates in.
-  const introDelay = reduced ? 0 : 2.15;
+  // Let the preloader finish before the hero animates in. Kept in step with
+  // Preloader DURATION (700ms) + its exit (~0.4s) so the hero is already
+  // rising as the loader fades out — no blank gap in between.
+  const introDelay = reduced ? 0 : 1;
 
   return (
     <section
@@ -99,12 +102,20 @@ export function Hero() {
           <motion.dl
             variants={rise}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="grid w-full max-w-xl grid-cols-4 overflow-hidden rounded-lg border border-line bg-panel/50 font-mono"
+            className="grid w-full max-w-xl grid-cols-2 overflow-hidden rounded-lg border border-line bg-panel/50 font-mono sm:grid-cols-4"
           >
             {hud.map((h, i) => (
               <div
                 key={h.k}
-                className={`px-3 py-3 ${i > 0 ? "border-l border-line" : ""}`}
+                className={cn(
+                  "px-3 py-3 border-line",
+                  // 2×2 on mobile: left divider on the right column, top
+                  // divider on the second row.
+                  i % 2 === 1 && "border-l",
+                  i >= 2 && "border-t sm:border-t-0",
+                  // 4-wide on desktop: a left divider on every cell but the first.
+                  i > 0 && "sm:border-l",
+                )}
               >
                 <dd className="text-lg font-semibold text-cyan sm:text-xl">
                   {h.v}
